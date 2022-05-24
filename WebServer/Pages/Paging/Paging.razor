@@ -1,0 +1,73 @@
+﻿@if (TotalPages > 0)
+{
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            @{
+                const int SHORT_PAGE = 6;
+                const int SHOW_FIRST_PAGE = 3;
+                int SHOW_LAST_PAGE = TotalPages - 2;
+                var disablePrev = PageIndex == 1 ? "disabled" : null;
+                var disableNext = PageIndex == TotalPages ? "disabled" : null;
+            }
+            <li class="page-item @disablePrev">
+                <a class="page-link" href="#" aria-label="Previous" @onclick="(() => OnClick.InvokeAsync(PageIndex - 1))">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            @if (TotalPages <= SHORT_PAGE)
+            {
+                for (int i = 1; i <= TotalPages; i++)
+                {
+                    var currentPage = i == PageIndex ? "active" : string.Empty;
+                    int paged = i;
+                    <li class="page-item @currentPage">
+                        <a href="#" value=@i class="page-link" @onclick="(() => OnClick.InvokeAsync(paged))">@i</a>
+                    </li>
+                }
+            }
+            else
+            {
+                for (int i = 1; i <= SHOW_FIRST_PAGE; i++)
+                {
+                    int paged = i;
+                    var currentPage = i == PageIndex ? "active" : string.Empty;
+                    <li class="page-item @currentPage">
+                        <a href="#" class="page-link" @onclick="(() => OnClick.InvokeAsync(paged))">@i</a>
+                    </li>
+                }
+
+                <li class="page-item page-link">...</li>
+                for (int i = SHOW_LAST_PAGE; i < TotalPages; i++)
+                {
+                    int paged = i;
+                    var currentPage = i == PageIndex ? "active" : string.Empty;
+                    <li class="page-item @currentPage"><a href="#" class="page-link" @onclick="(() => OnClick.InvokeAsync(paged))">@i</a></li>
+                }
+            }
+            <li class="page-item @disableNext">
+                <a class="page-link" href="#" aria-label="Next" @onclick="(() => OnClick.InvokeAsync(PageIndex + 1))">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+}
+
+@code {
+    [Parameter]
+    public int PageIndex { get; set; }
+
+    [Parameter]
+    public int TotalPages { get; set; }
+
+    [Parameter]
+    public bool HasPreviousPage { get; set; }
+
+    [Parameter]
+    public bool HasNextPage { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnClick { get; set; }
+
+}

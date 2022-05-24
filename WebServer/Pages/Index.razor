@@ -1,0 +1,72 @@
+﻿@page "/"
+@inject IUserService userService;
+
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+@if (response == null || response.Data == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Email</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in response.Data)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@(user.FirstName + user.LastName)</td>
+                    <td>@user.Email</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <Paging TotalPages=response.TotalPages
+        PageIndex=response.Page
+        HasPreviousPage=@(response.Page > 1)
+        HasNextPage=@(response.Page < response.TotalPages)
+        OnClick="PageIndexChanged">
+    </Paging>
+}
+
+@code {
+
+    int pageNumber = 0;
+    private UserResponse? response;
+    protected override async Task OnInitializedAsync()
+    {
+        await GetData(pageNumber);
+    }
+
+    protected async Task GetData(int page)
+    {
+        await Task.Delay(400);
+        response = await userService.GetUsersAsync(page);
+    }
+
+    public async void PageIndexChanged(int newPageNumber)
+    {
+        if (newPageNumber < 1 || newPageNumber > response?.TotalPages)
+        {
+            return;
+        }
+
+        response = null;
+        await GetData(newPageNumber);
+        StateHasChanged();
+    }
+}
