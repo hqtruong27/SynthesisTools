@@ -1,5 +1,5 @@
 ﻿@page "/"
-@using WebServer.Pages.Spinner
+@using SynthesisTools.Pages.Spinner
 @inject IUserService userService;
 
 <PageTitle>Welcome to Synthesis Tools</PageTitle>
@@ -44,7 +44,6 @@ Welcome to your new app.
     private bool isLoading;
     private int pageNumber = 0;
     private UserResponse? response;
-    private ElementReference divElement;
     protected override async Task OnInitializedAsync()
     {
         await GetDataAsync(pageNumber);

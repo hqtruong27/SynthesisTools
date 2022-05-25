@@ -1,4 +1,4 @@
-namespace WebServer.Data
+namespace SynthesisTools.Data
 {
     public class WeatherForecastService
     {

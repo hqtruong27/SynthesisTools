@@ -1,6 +1,6 @@
-﻿using WebServer.Models;
+﻿using SynthesisTools.Models;
 
-namespace WebServer.Services
+namespace SynthesisTools.Services
 {
     public interface IUserService
     {

@@ -1,4 +1,4 @@
-﻿namespace WebServer.IocConfig
+﻿namespace SynthesisTools.IocConfig
 {
     public static class InversionOfControl
     {

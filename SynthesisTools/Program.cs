@@ -1,6 +1,6 @@
 //using Microsoft.AspNetCore.Components;
 //using Microsoft.AspNetCore.Components.Web;
-using WebServer.IocConfig;
+using SynthesisTools.IocConfig;
 
 var builder = WebApplication.CreateBuilder(args);
 
