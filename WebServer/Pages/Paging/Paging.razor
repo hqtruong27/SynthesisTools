@@ -3,11 +3,9 @@
     <nav aria-label="Page navigation example">
         <ul class="pagination">
             @{
-                const int SHORT_PAGE = 6;
-                const int SHOW_FIRST_PAGE = 3;
                 int SHOW_LAST_PAGE = TotalPages - 2;
-                var disablePrev = PageIndex == 1 ? "disabled" : null;
-                var disableNext = PageIndex == TotalPages ? "disabled" : null;
+                var disablePrev = !HasPreviousPage ? "disabled" : null;
+                var disableNext = !HasNextPage ? "disabled" : null;
             }
             <li class="page-item @disablePrev">
                 <a class="page-link" href="#" aria-label="Previous" @onclick="(() => OnClick.InvokeAsync(PageIndex - 1))">
@@ -19,10 +17,10 @@
             {
                 for (int i = 1; i <= TotalPages; i++)
                 {
-                    var currentPage = i == PageIndex ? "active" : string.Empty;
+                    _isCurrentPage = i == PageIndex ? "active" : default!;
                     int paged = i;
-                    <li class="page-item @currentPage">
-                        <a href="#" value=@i class="page-link" @onclick="(() => OnClick.InvokeAsync(paged))">@i</a>
+                    <li class="page-item @_isCurrentPage">
+                        <a href="#" class="page-link" @onclick="(() => OnClick.InvokeAsync(paged))">@i</a>
                     </li>
                 }
             }
@@ -31,8 +29,8 @@
                 for (int i = 1; i <= SHOW_FIRST_PAGE; i++)
                 {
                     int paged = i;
-                    var currentPage = i == PageIndex ? "active" : string.Empty;
-                    <li class="page-item @currentPage">
+                    _isCurrentPage = i == PageIndex ? "active" : default!;
+                    <li class="page-item @_isCurrentPage">
                         <a href="#" class="page-link" @onclick="(() => OnClick.InvokeAsync(paged))">@i</a>
                     </li>
                 }
@@ -41,8 +39,8 @@
                 for (int i = SHOW_LAST_PAGE; i < TotalPages; i++)
                 {
                     int paged = i;
-                    var currentPage = i == PageIndex ? "active" : string.Empty;
-                    <li class="page-item @currentPage"><a href="#" class="page-link" @onclick="(() => OnClick.InvokeAsync(paged))">@i</a></li>
+                    _isCurrentPage = i == PageIndex ? "active" : default!;
+                    <li class="page-item @_isCurrentPage"><a href="#" class="page-link" @onclick="(() => OnClick.InvokeAsync(paged))">@i</a></li>
                 }
             }
             <li class="page-item @disableNext">
@@ -70,4 +68,6 @@
     [Parameter]
     public EventCallback<int> OnClick { get; set; }
 
+    private string _isCurrentPage = default!;
+    private const int SHORT_PAGE = 6, SHOW_FIRST_PAGE = 3;
 }

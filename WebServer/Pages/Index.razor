@@ -1,61 +1,72 @@
 ﻿@page "/"
+@using WebServer.Pages.Spinner
 @inject IUserService userService;
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Welcome to Synthesis Tools</PageTitle>
 
-<h1>Hello, world!</h1>
+@*<h1>Hello, world!</h1>
 
 Welcome to your new app.
 
-<SurveyPrompt Title="How is Blazor working for you?" />
-
-@if (response == null || response.Data == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Email</th>
-                <th>Name</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var user in response.Data)
-            {
+<SurveyPrompt Title="How is Blazor working for you?" />*@
+<Loading IsLoading="response?.Data == null || isLoading">
+    <Content>
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@user.Id</td>
-                    <td>@(user.FirstName + user.LastName)</td>
-                    <td>@user.Email</td>
+                    <th>Id</th>
+                    <th>Email</th>
+                    <th>Name</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var user in response!.Data)
+                {
+                    <tr>
+                        <td>@user.Id</td>
+                        <td>@(user.FirstName + user.LastName)</td>
+                        <td>@user.Email</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
 
-    <Paging TotalPages=response.TotalPages
-        PageIndex=response.Page
-        HasPreviousPage=@(response.Page > 1)
-        HasNextPage=@(response.Page < response.TotalPages)
-        OnClick="PageIndexChanged">
-    </Paging>
-}
+        <Paging TotalPages=response.TotalPages
+                PageIndex=response.Page
+                HasPreviousPage=@(response.Page > 1)
+                HasNextPage=@(response.Page < response.TotalPages)
+                OnClick="PageIndexChanged" />
+    </Content>
+</Loading>
+
 
 @code {
-
-    int pageNumber = 0;
+    private bool isLoading;
+    private int pageNumber = 0;
     private UserResponse? response;
+    private ElementReference divElement;
     protected override async Task OnInitializedAsync()
     {
-        await GetData(pageNumber);
+        await GetDataAsync(pageNumber);
     }
 
-    protected async Task GetData(int page)
+    private async Task GetDataAsync(int page)
     {
+        isLoading = true;
         await Task.Delay(400);
         response = await userService.GetUsersAsync(page);
+        isLoading = false;
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        // execute conditionally for loading data, otherwise this will load
+        // every time the page refreshes
+        if (firstRender)
+        {
+            // Do work to load page data and set properties
+            isLoading = false;
+        }
     }
 
     public async void PageIndexChanged(int newPageNumber)
@@ -65,8 +76,7 @@ else
             return;
         }
 
-        response = null;
-        await GetData(newPageNumber);
+        await GetDataAsync(newPageNumber);
         StateHasChanged();
     }
 }
