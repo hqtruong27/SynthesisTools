@@ -1,5 +1,5 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+//using Microsoft.AspNetCore.Components;
+//using Microsoft.AspNetCore.Components.Web;
 using WebServer.IocConfig;
 
 var builder = WebApplication.CreateBuilder(args);
